@@ -1,0 +1,215 @@
+# R Data frames
+
+A data frame is a collection of columns. It's a lot like a spreadsheet or a SQL table. There's column names and rows and cells with data. The columns contain one variable, and the rows have a set of values that match each column. 
+They help summarize data and put it into a format that's easy to read and use. 
+
+# There's some things to know about data frames before working with them. 
+First, columns should be named. Using empty column names can create problems with your results later on.
+Next, it's important to know that the data stored in your data frame can be many different types, like numeric, factor, or character. Often data frames contain dates, time stamps and logical vectors. 
+Finally, each column should contain the same number of data items, even if some of those data items are missing. Data frames are foundational.
+
+# Let's talk about tibbles. 
+In the tidyverse, tibbles are like streamlined data frames. They make working with data easier, but they're a little different from standard data frames. 
+First, tibbles never change the data types of the inputs. They won't change your strings to factors or anything else. 
+You can make more changes to base data frames, but tibbles are easier to use. This saves time because you won't have to do as much cleaning or changing data types in tibbles. 
+Tibbles also never change the names of your variables, and they never create row names.
+Finally, tibbles make printing in R easier. They won't accidentally overload your console because they're automatically set to pull up only the first 10 rows and as many columns as fit on screen. 
+Super useful when you're working with large sets of data. 
+
+Data frames and tibbles are the building blocks for analysis in R.
+Consistent data structures like data frames make it easier to operate on an entire dataset. 
+Tidy data refers to the principles that make data structures meaningful and easy to understand. It's a way of standardizing the organization of data within R. These standards are pretty straightforward. 
+Variables are organized into columns. Observations are organized into rows and each value must have its own cell.
+
+## Working with data frames
+Let's open RStudio and get started.
+We'll use a preloaded dataset with information about diamonds. This data set is part of the ggplot2 package in the tidyverse. So make sure you first load ggplot2. 
+
+install.packages("tidyverse")
+library(ggplot2)
+
+data("diamonds")
+View(diamonds)
+
+if you look closely at the bottom of the diamonds data set, you will see there are actually 53,940 entries (or observation rows) in total
+
+In order to get a much shorter and simpler overview of the data observations, we will use the head() function introduced next.
+We can use the head function to give us just the first six rows. This is a nice preview of the entire dataset.
+head(diamonds)
+# A tibble: 6 
+× 10
+  carat cut       color clarity depth table price     x     y     z
+  <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
+1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+2  0.21 Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+3  0.23 Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+4  0.29 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+5  0.31 Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+6  0.24 Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+
+We can also get the structure of the data frame using functions like str() and colnames(). These are just two functions you can use to check out your data.
+str(diamonds)
+tibble [53,940 × 10] (S3: tbl_df/tbl/data.frame)
+ $ carat  : num [1:53940] 0.23 0.21 0.23 0.29 0.31 0.24 0.24 0.26 0.22 0.23 ...
+ $ cut    : Ord.factor w/ 5 levels "Fair"<"Good"<..: 5 4 2 4 2 3 3 3 1 3 ...
+ $ color  : Ord.factor w/ 7 levels "D"<"E"<"F"<"G"<..: 2 2 2 6 7 7 6 5 2 5 ...
+ $ clarity: Ord.factor w/ 8 levels "I1"<"SI2"<"SI1"<..: 2 3 5 4 2 6 7 3 4 5 ...
+ $ depth  : num [1:53940] 61.5 59.8 56.9 62.4 63.3 62.8 62.3 61.9 65.1 59.4 ...
+ $ table  : num [1:53940] 55 61 65 58 58 57 57 55 61 61 ...
+ $ price  : int [1:53940] 326 326 327 334 335 336 336 337 337 338 ...
+ $ x      : num [1:53940] 3.95 3.89 4.05 4.2 4.34 3.94 3.95 4.07 3.87 4 ...
+ $ y      : num [1:53940] 3.98 3.84 4.07 4.23 4.35 3.96 3.98 4.11 3.78 4.05 ...
+ $ z      : num [1:53940] 2.43 2.31 2.31 2.63 2.75 2.48 2.47 2.53 2.49 2.39 ...
+
+colnames(diamonds)
+ [1] "carat"   "cut"     "color"   "clarity" "depth"   "table"   "price"   "x"       "y"      
+[10] "z"   
+
+For example, we could use the structure function to highlight the structure of this data frame. 
+This gives us some high-level info like the column names and the type of data contained in those columns. But if we just want to know the column names we can use colnames instead.
+
+We can also use the mutate function to make changes to our data frame. The mutate function is part of the dplyr package which is in the tidyverse.
+library(tidyverse)
+mutate(diamonds, carat_2=carat*53940)
+
+We'll first call mutate followed by the name of the data frame we want to change. Then we'll add a column and the name of the new column we want to create.
+Then we want to calculate this new column. In this case, to make it easier to read the carat column we'll multiply it by 53940 to create a new column carat_2. And when we run this, our data frame has a new column. 
+You won't lose any columns when you create the new one. The rest of the data frame will still be the same. 
+
+
+## Background for this activity
+There are three common sources for data:
+
+- A`package` with data that can be accessed by loading that `package`
+- An external file like a spreadsheet or CSV that can be imported into `R`
+- Data that has been generated from scratch using `R` code
+
+Wherever data comes from, you will almost always want to store it in a data frame object to work with it. Now, you can start creating and exploring data frames with the code chunks in the RMD space. 
+To interact with the code chunk, click the green arrow in the top-right corner of the chunk. The executed code will appear in the RMD space and your console.
+
+## Step 1: Load packages
+Start by installing the required package; in this case, you will want to install `tidyverse`. If you have already installed and loaded `tidyverse` in this session, feel free to skip the code chunks in this step.
+
+```{r}
+install.packages("tidyverse")
+```
+```{r}
+library(tidyverse)
+```
+
+## Step 2: Create data frame
+Sometimes you will need to generate a data frame directly in `R`. There are a number of ways to do this; 
+one of the most common is to create individual vectors of data and then combine them into a data frame using the `data.frame()` function.
+
+Here's how this works. First, create a vector of names:
+```{r}
+names <- c("Peter", "Jennifer", "Julie", "Alex")
+```
+
+Then create a vector of ages:
+```{r}
+age <- c(15, 19, 21, 25)
+```
+
+With these two vectors, you can create a new data frame called `people`:
+```{r}
+people <- data.frame(names, age)
+```
+
+## Step 3: inspect the data frame
+Now that you have this data frame, you can use some different functions to inspect it.
+One common function you can use to preview the data is the `head()` function, which returns the columns and the first several rows of data. 
+You can check out how the `head()` function works by running the chunk below:
+
+```{r}
+head(people)
+```
+
+In addition to `head()`, there are a number of other useful functions to summarize or preview your data. For example, the `str()` and `glimpse()` functions will both provide summaries of each column in your data arranged horizontally. 
+You can check out these two functions in action by running the code chunks below:
+
+```{r}
+str(people)
+```
+
+```{r}
+glimpse(people)
+```
+
+You can also use `colnames()` to get a list the column names in your data set. Run the code chunk below to check out this function:
+
+```{r}
+colnames(people)
+```
+
+Now that you have a data frame, you can work with it using all of the tools in `R`. For example, you could use `mutate()` 
+if you wanted to create a new variable that would capture each person's age in twenty years. The code chunk below creates that new variable:
+
+```{r}
+mutate(people, age_in_20 = age + 20)
+```
+
+## Step 4: Try it yourself
+To get more familiar with creating and using data frames, use the code chunks below to create your own custom data frame. 
+First, create a vector of any five different fruits. You can type directly into the code chunk below; just place your cursor in the box and click to type. 
+Once you have input the fruits you want in your data frame, run the code chunk.
+
+```{r}
+fruit <- c("Lemon", "Blueberry", "Grapefruit", "Mango", "Strawberry")
+```
+
+Now, create a new vector with a number representing your own personal rank for each fruit. Give a 1 to the fruit you like the most, and a 5 to the fruit you like the least. 
+Remember, the scores need to be in the same order as the fruit above. So if your favorite fruit is last in the list above, the score `1` needs to be in the last position in the list below. 
+Once you have input your rankings, run the code chunk.
+
+```{r}
+rank <- c(4, 2, 5, 3, 1)
+```
+
+Finally, combine the two vectors into a data frame. You can call it `fruit_ranks`. Edit the code chunk below and run it to create your data frame.
+
+```{r}
+fruit_ranks <- data.frame(fruit, rank)
+```
+
+After you run this code chunk, it will create a data frame with your fruits and rankings.
+
+
+## Working with Tibbles
+Tibbles are like streamlined data frames that are automatically set to pull up only the first 10 rows of a dataset, and only as many columns as can fit on the screen. 
+This is really useful when you’re working with large sets of data. Unlike data frames, tibbles never change the names of your variables, or the data types of your inputs. 
+Overall, you can make more changes to data frames, but tibbles are easier to use. The tibble package is part of the core tidyverse. So, if you’ve already installed the tidyverse, you have what you need to start working with tibbles. 
+
+# Creating tibbles 
+You can use the pre-loaded diamonds dataset.
+You can load the dataset with the data() function using the following code:
+
+library(tidyverse) 
+data(diamonds)
+
+Then, let’s add the data frame to our data viewer in RStudio with the View() function. 
+View(diamonds)
+
+The dataset has 10 columns and thousands of rows. 
+
+Now let’s create a tibble from the same dataset. You can create a tibble from existing data with the as_tibble() function. Indicate what data you’d like to use in the parentheses of the function. 
+In this case, you will put the word “diamonds."
+
+as_tibble(diamonds)
+# A tibble: 53,940 × 10
+   carat cut       color clarity depth table price     x     y     z
+   <dbl> <ord>     <ord> <ord>   <dbl> <dbl> <int> <dbl> <dbl> <dbl>
+ 1  0.23 Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+ 2  0.21 Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+ 3  0.23 Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+ 4  0.29 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+ 5  0.31 Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+ 6  0.24 Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+ 7  0.24 Very Good I     VVS1     62.3    57   336  3.95  3.98  2.47
+ 8  0.26 Very Good H     SI1      61.9    55   337  4.07  4.11  2.53
+ 9  0.22 Fair      E     VS2      65.1    61   337  3.87  3.78  2.49
+10  0.23 Very Good H     VS1      59.4    61   338  4     4.05  2.39
+# ℹ 53,930 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+While RStudio’s built-in data frame tool returns thousands of rows in the diamonds dataset, the tibble only returns the first 10 rows in a neatly organized table. That makes it easier to view and print. 
