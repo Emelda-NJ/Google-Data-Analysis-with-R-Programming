@@ -1,0 +1,68 @@
+# Use pipes to nest code
+
+A pipe is a tool in R for expressing a sequence of multiple operations. In other words, it takes the output of one statement and makes it the input of the next statement. 
+Instead of typing out functions contained inside other functions, you could use the pipe operator to do the same work. 
+In programming, we describe this as nested. Nested describes code that performs a particular function and is contained within code that performs a broader function. 
+You can think of a pipe as a way to code the phrase and then. Say you've got sales data and you need to find the mean or average. You can create a pipe by calling up the data and then grouping the data and then summarizing the group data using a mean function. 
+
+Let's check out an example. First, we'll open RStudio. Then we'll start a new script so we can save our work. We'll save it as ToothGrowth exploration.
+
+We'll use the ToothGrowth dataset, which is already installed in R. This dataset contains data about the effect of vitamin C on the growth of teeth in guinea pigs. 
+To load any dataset already installed, we use the data function. We then add the name of the dataset, ToothGrowth. Now that the data is loaded, we can check it out with the View function. 
+In a script we use the Run button to run our code. The return usually shows up in the console. But with View, a new tab appears in the script showing the contents of the dataset. 
+
+data("ToothGrowth")
+View(ToothGrowth)
+
+Let's say we need to filter and sort this data to organize it for analysis. Without pipes, we could do this either by nesting commands or by creating a sequence of data frames. 
+Let's start by filtering the dataset. Note that we want to first install and load the correct filter function, which comes as part of a package. 
+This function comes as part of the dplyr package. We'll assign a name to the new dataset and then apply the filter function.
+This filters the data so that we only see rows where the dose of vitamin C is exactly 0.5. This includes both types of vitamin C used in the study. Orange juice or OJ in our dataset, and ascorbic acid or VC. 
+
+install.packages("dpylr")
+library(dpylr)
+
+filtered_tg <- filter(ToothGrowth, dose == 0.5)
+filtered_tg
+
+arrange(filtered_tg, len)
+
+Next, we'll sort it with the arrange function. We'll include the name of the filter dataset followed by the column name we want to sort by. In this case len, which stands for length of tooth. When we run this, the return appears in the console.
+The data is arranged in ascending order by len. The return only shows rows where the dose amount is 0.5.
+
+#  Nested Function
+We'll use a nested function, which is a function that is completely contained within another function.
+With nested functions, we read from the inside out. The code filters the data first. Then it arranges or sorts it. Now, let's run this. We get the same result. 
+
+arrange(filter(ToothGrowth, dose == 0.5), len)
+
+# Pipe Operator
+The operator used to call out a pipe is a percentage sign followed by a greater than sign and another percentage sign; %<% 
+
+filtered_toothgrowth <- ToothGrowth %<%
+	filter(dose == 0.5) %<%
+	arrange(len)
+filtered_toothgrowth
+
+We'll start this pipe by assigning it to a variable. Then we'll type the name of the dataset we're pulling data from, ToothGrowth. We'll use our keyboard shortcut to add the pipe operator after that. 
+Now we can press enter to go to the next line. RStudio automatically indents the next line, recognizing that it's part of the pipe. Next, we'll filter the data.
+We don't have to call out the dataset inside parentheses, like we did in earlier examples, because we started our pipe with it. The pipe automatically applies the dataset to each step. 
+We can finish up our pipe on a new line with the arrange function and sort the data. Since this is our last line of code, we don't need a pipe operator. Finally, click "Run" and we get the same return as our other methods. 
+Our pipe is setup to call the dataset and then filter the dataset and then sort the dataset. 
+
+# let's say we also wanted to compute the average tooth length or len for each of the two supplements used in the study: orange juice or OJ and ascorbic acid or VC. 
+
+filtered_toothgrowth <- ToothGrowth %<%
+	filter(dose == 0.5) %<%
+	group_by(supp) %<%
+	summarize(mean_len = mean(len, na.rm = T), .group = "drop")
+filtered_toothgrowth
+
+We'll replace the arrange function with the group by function. This'll group our results by the two supplements. We type supp in the parentheses and add a pipe. 
+We group by and then we summarize. Our argument, which comes after the function summarize, basically tells R what to do with missing values and to make sure the data is grouped the right way when we add the summarize function. 
+Now, we'll run our new pipe and get the average length of tooth when the dose is equal to 0.5 for each of our supplements.
+
+# There's a couple of things to remember when using pipes. 
+First, it's important to add the pipe operator at the end of each line of the piped operation, except the last one. 
+Second is to check your code after you've programmed your pipe. Remember, RStudio automatically indents lines of code that are part of a pipe. If a line in your code isn't indented, it probably hasn't been added to the pipe. That could lead to an error statement. 
+Then you can revisit the piped operation to check for parts of your code to fix.
