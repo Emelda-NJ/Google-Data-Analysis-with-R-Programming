@@ -1,0 +1,340 @@
+How to clean up our columns. 
+Let's install the Here, Skimr and Janitor packages now. We'll go ahead and open our console. 
+First, we'll add the Here package. This package makes referencing files easier. To install it, we'll just write install.packages. Then in the parentheses, we'll put Here and RStudio will install it. 
+After we install it, we'll also need to load it using library. 
+
+install.packages("here")
+library(here)
+
+Next, we'll install Skimr and Janitor. As a quick reminder, these packages simplify data cleaning tasks. They're both really useful and do slightly different things. 
+The Skimr package makes summarizing data really easy and let's you skim through it more quickly.
+
+install.packages("skimr")
+library(skimr)
+
+The Janitor package has functions for cleaning data.
+
+install.packages("janitor")
+library(janitor)
+
+Finally, we want to make sure the dplyr package is loaded since we are going to be using some of its features.
+
+install.packages("dplyr")
+library(dplyr)
+
+There, now we've got all the packages we need for basic data cleaning. 
+Now, let's load some data in. For example, if you had a CSV you wanted to load, you could write, read underscore CSV, and input the file name in the parentheses. 
+This is where the Here package comes in handy. Be sure to install and load the Here package before trying to save CSV files. For now, we'll load the palmer penguin package. 
+This dataset, the palmer penguin data has lots of information about three penguin species in the Palmer Archipelago, including size measurements, clutch sizes, and blood isotope ratios. 
+First, we'll install the package. We'll type install.packages and input palmerpenguins.
+Then remember to load it by using the library function.
+
+install.packages("palmerpenguins")
+library(palmerpenguins)
+
+Now that we've got this data loaded into our library, we can try some cleaning functions on our columns. 
+There's a few different functions that we can use to get summaries of our data frame. Skim without charts, glimpse, head, and select. 
+
+The skim without charts function gives us a pretty comprehensive summary of a dataset. 
+skim_without_charts(penguins)
+
+> skim_without_charts(penguins)
+── Data Summary ────────────────────────
+                           Values  
+Name                       penguins
+Number of rows             344     
+Number of columns          8       
+_______________________            
+Column type frequency:             
+  factor                   3       
+  numeric                  5       
+________________________           
+Group variables            None    
+
+── Variable type: factor ──────────────────────────────────────────────────────────────────────
+  skim_variable n_missing complete_rate ordered n_unique top_counts                 
+1 species               0         1     FALSE          3 Ade: 152, Gen: 124, Chi: 68
+2 island                0         1     FALSE          3 Bis: 168, Dre: 124, Tor: 52
+3 sex                  11         0.968 FALSE          2 mal: 168, fem: 165         
+
+── Variable type: numeric ─────────────────────────────────────────────────────────────────────
+  skim_variable     n_missing complete_rate   mean      sd     p0    p25    p50    p75   p100
+1 bill_length_mm            2         0.994   43.9   5.46    32.1   39.2   44.4   48.5   59.6
+2 bill_depth_mm             2         0.994   17.2   1.97    13.1   15.6   17.3   18.7   21.5
+3 flipper_length_mm         2         0.994  201.   14.1    172    190    197    213    231  
+4 body_mass_g               2         0.994 4202.  802.    2700   3550   4050   4750   6300  
+5 year                      0         1     2008.    0.818 2007   2007   2008   2009   2009  
+When we run this, First, it gives us a summary with the name of the dataset and the number of rows and columns. It also gives us the column types and a summary of the different data types contained in the data frame. 
+
+Or we could use Glimpse to get a really quick idea of what's in this dataset. When we run this command, it'll show us a summary of the data. 
+glimpse(penguins)
+
+> glimpse(penguins)
+Rows: 344
+Columns: 8
+$ species           <fct> Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Ade…
+$ island            <fct> Torgersen, Torgersen, Torgersen, Torgersen, Torgersen, Torgersen, T…
+$ bill_length_mm    <dbl> 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, 42.0, 37.8, 37.…
+$ bill_depth_mm     <dbl> 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, 20.2, 17.1, 17.…
+$ flipper_length_mm <int> 181, 186, 195, NA, 193, 190, 181, 195, 193, 190, 186, 180, 182, 191…
+$ body_mass_g       <int> 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675, 3475, 4250, 3300, 370…
+$ sex               <fct> male, female, female, NA, female, male, female, male, NA, NA, NA, N…
+$ year              <int> 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2…
+There's 344 rows and eight columns. We have species, island, measurements for bills, which are basically beaks and flippers, the penguins' body mass in grams, the sex, and finally, the year the data was recorded. 
+
+We can also use Head to get a preview of the column names and the first few rows of this data set. 
+head(penguins)
+
+> head(penguins)
+# A tibble: 6 × 8
+  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+  <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007
+2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007
+3 Adelie  Torgersen           40.3          18                 195        3250 female  2007
+4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007
+5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007
+6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007
+Having the column names summarized like this will make it easier to clean them up. 
+
+We can use select to specify certain columns or to exclude columns we don't need right now. 
+Let's say we only need to check the species column. We can input penguins, then a pipe to indicate we'll add another command, and our select. 
+penguins%>%
+  select(species)
+
+> penguins%>%
++   select(species)
+# A tibble: 344 × 1
+   species
+   <fct>  
+ 1 Adelie 
+ 2 Adelie 
+ 3 Adelie 
+ 4 Adelie 
+ 5 Adelie 
+ 6 Adelie 
+ 7 Adelie 
+ 8 Adelie 
+ 9 Adelie 
+10 Adelie 
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+Now we have just the species column, 
+
+or maybe we want everything except the species column. We'll put minus species instead of species, and now we have every column but species. 
+penguins%>%
+  select(-species)
+
+> penguins%>%
++   select(-species)
+# A tibble: 344 × 7
+   island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Torgersen           39.1          18.7               181        3750 male    2007
+ 2 Torgersen           39.5          17.4               186        3800 female  2007
+ 3 Torgersen           40.3          18                 195        3250 female  2007
+ 4 Torgersen           NA            NA                  NA          NA NA      2007
+ 5 Torgersen           36.7          19.3               193        3450 female  2007
+ 6 Torgersen           39.3          20.6               190        3650 male    2007
+ 7 Torgersen           38.9          17.8               181        3625 female  2007
+ 8 Torgersen           39.2          19.6               195        4675 male    2007
+ 9 Torgersen           34.1          18.1               193        3475 NA      2007
+10 Torgersen           42            20.2               190        4250 NA      2007
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+The select statement is useful for pulling just a subset of variables from a large dataset. This lets you focus on specific groups of variables. 
+There's a lot of other select functions that build on this. 
+
+Now that we know our column names, we've got a better idea of what we might want to change. 
+The rename function makes it easy to change column names. 
+Starting with the penguin data, we'll type rename and change the name of our island column to island underscore new.
+penguins%>%
+  rename(island_new=island)
+
+> penguins%>%
++   rename(island_new=island)
+# A tibble: 344 × 8
+   species island_new bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>   <fct>               <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Torgersen            39.1          18.7               181        3750 male    2007
+ 2 Adelie  Torgersen            39.5          17.4               186        3800 female  2007
+ 3 Adelie  Torgersen            40.3          18                 195        3250 female  2007
+ 4 Adelie  Torgersen            NA            NA                  NA          NA NA      2007
+ 5 Adelie  Torgersen            36.7          19.3               193        3450 female  2007
+ 6 Adelie  Torgersen            39.3          20.6               190        3650 male    2007
+ 7 Adelie  Torgersen            38.9          17.8               181        3625 female  2007
+ 8 Adelie  Torgersen            39.2          19.6               195        4675 male    2007
+ 9 Adelie  Torgersen            34.1          18.1               193        3475 NA      2007
+10 Adelie  Torgersen            42            20.2               190        4250 NA      2007
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+Now, looking at our column names, we can see the column name has changed. 
+
+Or let's say we want to change our columns so that they're spelled and formatted correctly. In spreadsheet programs, as long as our column names are meaningful, they're fine. 
+But since we have to type the column names over and over in R, we need them to be consistent. Similar to the rename function, the rename_with() function can change column names to be more consistent. 
+For example, maybe we want all of our column names to be in uppercase. We can use the rename_with() function to do that. This will automatically make our column names uppercase. 
+rename_with(penguins, toupper)
+
+> rename_with(penguins, toupper)
+# A tibble: 344 × 8
+   SPECIES ISLAND    BILL_LENGTH_MM BILL_DEPTH_MM FLIPPER_LENGTH_MM BODY_MASS_G SEX     YEAR
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+But since variable names are usually lowercase, we'll use the "To lower" option to change it back.
+rename_with(penguins, tolower)
+
+> rename_with(penguins, tolower)
+# A tibble: 344 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+
+
+The clean names function in the Janitor package will automatically make sure that the column names are unique and consistent. Let's try the clean names function on our penguins data.
+clean_names(penguins)
+
+> clean_names(penguins)
+# A tibble: 344 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+This ensures that there's only characters, numbers, and underscores in the names. 
+
+## Cleaning data Activity
+## Step 1: Load packages
+Start by installing the required packages. If you have already installed and loaded `tidyverse`, `skimr`, and `janitor`.
+
+```{r}
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+```
+
+Once a package is installed, you can load it by running the `library()` function with the package name inside the parentheses:
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(janitor)
+```
+## Step 2: Import data
+The data in this example is originally from the article Hotel Booking Demand Datasets (https://www.sciencedirect.com/science/article/pii/S2352340918315191), written by Nuno Antonio, Ana Almeida, and Luis Nunes for Data in Brief, Volume 22, February 2019.
+The data was downloaded and cleaned by Thomas Mock and Antoine Bichat for #TidyTuesday during the week of February 11th, 2020 (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
+You can learn more about the dataset here:
+https://www.kaggle.com/jessemostipak/hotel-booking-demand
+
+In the chunk below, you will use the `read_csv()` function to import data from a .csv in the project folder called "hotel_bookings.csv" and save it as a data frame called `bookings_df`:
+
+```{r}
+bookings_df <- read_csv("hotel_bookings.csv")
+```
+## Step 3: Getting to know your data
+Before you start cleaning your data, take some time to explore it. You can use several functions that you are already familiar with to preview your data, including the `head()` function in the code chunk below:
+
+```{r}
+head(bookings_df)
+```
+
+You can summarize or preview the data with the `str()` and `glimpse()` functions to get a better understanding of the data by running the code chunks below:
+
+```{r}
+str(bookings_df)
+```
+
+```{r}
+glimpse(bookings_df)
+```
+
+You can also use `colnames()` to check the names of the columns in your data set. Run the code chunk below to find out the column names in this data set:
+
+```{r}
+colnames(bookings_df)
+```
+
+Use the `skim_without_charts()` function from the `skimr` package by running the code below:
+
+```{r}
+skim_without_charts(bookings_df)
+```
+## Step 4: Cleaning your data
+Based on your notes you are primarily interested in the following variables: hotel, is_canceled, lead_time. Create a new data frame with just those columns, calling it `trimmed_df`.
+
+```{r}
+trimmed_df <- bookings_df %>% 
+  select(hotel, is_canceled, lead_time)
+```
+
+Rename the variable 'hotel' to be named 'hotel_type' to be crystal clear on what the data is about:
+
+```{r}
+trimmed_df %>% 
+  select(hotel, is_canceled, lead_time) %>% 
+  rename(hotel_type = hotel)
+```
+
+In this example, you can combine the arrival month and year into one column using the unite() function:
+
+```{r}
+example_df <- bookings_df %>%
+  select(arrival_date_year, arrival_date_month) %>% 
+  unite(arrival_month_year, c("arrival_date_month", "arrival_date_year"), sep = " ")
+```
+
+## Step 5: Another way of doing things
+You can also use the`mutate()` function to make changes to your columns. 
+Let's say you wanted to create a new column that summed up all the adults, children, and babies on a reservation for the total number of people. Modify the code chunk below to create that new column: 
+
+```{r}
+example_df <- bookings_df %>%
+  mutate(guests = adults + children + babies)
+
+head(example_df)
+```
+
+Great. Now it's time to calculate some summary statistics! Calculate the total number of canceled bookings and the average lead time for booking - you'll want to start your code after the %>% symbol. 
+Make a column called 'number_canceled' to represent the total number of canceled bookings. Then, make a column called 'average_lead_time' to represent the average lead time. 
+Use the `summarize()` function to do this in the code chunk below:
+
+```{r}
+example_df <- bookings_df %>%
+  summarize(number_canceled = sum(is_canceled),
+            average_lead_time = mean(lead_time))
+
+head(example_df)
+```
