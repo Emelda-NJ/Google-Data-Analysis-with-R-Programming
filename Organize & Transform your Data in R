@@ -1,0 +1,263 @@
+## Organize your Data
+
+Some functions that will help you organize and filter your data. Organizing our data and comparing different metrics from that data helps us find new insights. In other words it makes our data useful. 
+To help us do this, we'll use the arrange, group by and filter functions. 
+Let's start by sorting our data. We'll keep working with the palmer penguins data. We'll also need to load the right packages. All the packages we'll need are part of the core tidyverse.
+
+> colnames(penguins)
+[1] "species"           "island"            "bill_length_mm"    "bill_depth_mm"    
+[5] "flipper_length_mm" "body_mass_g"       "sex"               "year"             
+
+We can use the arrange function to choose which variable we want to sort by, for example let's say we want to sort our penguin data by bill length. 
+penguins%>% 
+  arrange(bill_length_mm)
+
+> penguins%>% 
++   arrange(bill_length_mm)
+# A tibble: 344 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Dream               32.1          15.5               188        3050 female  2009
+ 2 Adelie  Dream               33.1          16.1               178        2900 female  2008
+ 3 Adelie  Torgersen           33.5          19                 190        3600 female  2008
+ 4 Adelie  Dream               34            17.1               185        3400 female  2008
+ 5 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007
+ 6 Adelie  Torgersen           34.4          18.4               184        3325 female  2007
+ 7 Adelie  Biscoe              34.5          18.1               187        2900 female  2008
+ 8 Adelie  Torgersen           34.6          21.1               198        4400 male    2007
+ 9 Adelie  Torgersen           34.6          17.2               189        3200 female  2008
+10 Adelie  Biscoe              35            17.9               190        3450 female  2008
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+We'll type in a range and our column name. And when we execute this command it will return a tibble with data sorted by bill lengths. It's currently in ascending order. 
+If we want to sort it in descending order we just add a minus sign before the column name.
+penguins%>% 
+  arrange(-bill_length_mm)
+
+> penguins%>% 
++   arrange(-bill_length_mm)
+# A tibble: 344 × 8
+   species   island bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>     <fct>           <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Gentoo    Biscoe           59.6          17                 230        6050 male    2007
+ 2 Chinstrap Dream            58            17.8               181        3700 female  2007
+ 3 Gentoo    Biscoe           55.9          17                 228        5600 male    2009
+ 4 Chinstrap Dream            55.8          19.8               207        4000 male    2009
+ 5 Gentoo    Biscoe           55.1          16                 230        5850 male    2009
+ 6 Gentoo    Biscoe           54.3          15.7               231        5650 male    2008
+ 7 Chinstrap Dream            54.2          20.8               201        4300 male    2008
+ 8 Chinstrap Dream            53.5          19.9               205        4500 male    2008
+ 9 Gentoo    Biscoe           53.4          15.8               219        5500 male    2009
+10 Chinstrap Dream            52.8          20                 205        4550 male    2008
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+And now, the longest penguin bill is first. 
+
+Now it's important to remember this data is just in our console to save this as a data frame will start by naming it. Then we'll input the function we used to arrange the previous version of the penguins data.
+penguins2 <- penguins%>% arrange(-bill_length_mm)
+View(penguins2)
+When we execute this it'll save a new data frame and we can use view penguins2 to add it to our data. This lets you save cleaned data without losing information from the original dataset. 
+
+You can also sort by data using the group by function. Group by is usually combined with other functions. For example, we might want to group by a certain column and then perform an operation on those groups. 
+With our penguin data, we can group by island and then use the summarize function to get the mean bill length. Basically the summarize function lets us get high level information about our penguin data. 
+So let's build our group by statement first.
+
+penguins %>% group_by(island) %>% drop_na() %>% summarize(mean_bill_length_mm = mean(bill_length_mm))
+> penguins %>% group_by(island) %>% drop_na() %>% summarize(mean_bill_length_mm = mean(bill_length_mm))
+# A tibble: 3 × 2
+  island    mean_bill_length_mm
+  <fct>                   <dbl>
+1 Biscoe                   45.2
+2 Dream                    44.2
+3 Torgersen                39.0
+
+We're not interested in NA values so we can leave those out using the drop underscore NA argument, drop_na(). This addresses any missing values in our dataset. It's important to be careful when using drop_na. 
+It's useful doing a group level summary statistic like this but it will remove rows from the data. Inside the summarize, We'll title the summary column mean bill length millimeters, mean_bill_length_mm. 
+And when we run this we get a data frame with the three islands and the mean bill length of the penguins living there. 
+
+We can get other summaries too, for example, if we want to know the maximum bill length, we can write a similar function and replace mean with max.
+> penguins %>% group_by(island) %>% drop_na() %>% summarize(max_bill_length_mm = max(bill_length_mm))
+# A tibble: 3 × 2
+  island    max_bill_length_mm
+  <fct>                  <dbl>
+1 Biscoe                  59.6
+2 Dream                   58  
+3 Torgersen               46  
+And now we know that the penguin with the longest bill lived on Biscoe island. 
+
+Both group by and summarize can perform multiple tasks. For example, we could group by island and species and then summarize to calculate both the mean and max. 
+To do that, we can write a similar command. We'll put species and island in our group by and drop any missing values. And then we can add a summarize statement with a max and mean calculation.
+And when we run this, we have both groupings and the max and mean. 
+
+> penguins %>% group_by(species, island) %>% drop_na() %>% summarize(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm))
+`summarise()` has grouped output by 'species'. You can override using the `.groups` argument.
+# A tibble: 5 × 4
+# Groups:   species [3]
+  species   island    max_bl mean_bl
+  <fct>     <fct>      <dbl>   <dbl>
+1 Adelie    Biscoe      45.6    39.0
+2 Adelie    Dream       44.1    38.5
+3 Adelie    Torgersen   46      39.0
+4 Chinstrap Dream       58      48.8
+5 Gentoo    Biscoe      59.6    47.6
+Thanks to piping we can combine all of these cleaning and transforming tasks into one code chunk. 
+
+Finally we can filter results using the filter function. Let's say we only want data on Adelie penguins. We'll start with the dataset we're using and then add the filter.
+> penguins %>% filter(species == "Adelie")
+# A tibble: 152 × 8
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007
+# ℹ 142 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+You might notice that we're using two equal signs here; that's on purpose. The double equal sign means exactly equal to in R. 
+And now we have a data frame that only contains data on Adelie penguins. This lets us narrow down our analysis if we need to. 
+
+Being able to clean and organized data is a key step in the data analysis process and knowing the right tool for the job is an important skill for a data analyst. 
+R makes wrangling data easier and gives you a lot of functionality across the different stages of the data analysis process. 
+Now that we've cleaned our data, we can then transform our data in R using the separate, unite and mutate functions.
+
+
+## Transform your Data
+We will be using manually entered data instead of a data set from an R package.
+
+id <- c(1:10)
+name <- c("John Mendes", "Rob Stewart", "Rachel Abrahamson", "Christy Hickman", "Johnson Harper", "Candace Miller", "Carlson Landy", "Pansy Jordan", "Darius Berry", "Claudia Garcia")
+job_title <- c("Professional", "Programmer", "Management", "Clerical", "Developer", "Programmer", "Management", "Clerical", "Developer", "Programmer")
+
+employee <- data.frame(id, name, job_title)
+
+Sometimes you need to be able to break up a variable across multiple columns or combine existing columns, or even add new values to your data frame.
+We'll use the separate, unite and mutate functions to transform our data in R. Luckily, the packages already downloaded into our library have some tools we can use to do just that. 
+To start, we'll create a standard data frame from scratch, so that we can test out other functions. 
+But you could also make a tribble here since we're manually inputting the data. Our data contains employee information, including names and job titles.
+We can then name the data frame employee, indicate the column names as id, name and job title, and print the whole data frame.
+
+> id <- c(1:10)
+> name <- c("John Mendes", "Rob Stewart", "Rachel Abrahamson", "Christy Hickman", "Johnson Harper", "Candace Miller", "Carlson Landy", "Pansy Jordan", "Darius Berry", "Claudia Garcia")
+> job_title <- c("Professional", "Programmer", "Management", "Clerical", "Developer", "Programmer", "Management", "Clerical", "Developer", "Programmer")
+> 
+> employee <- data.frame(id, name, job_title)
+> print(employee)
+   id              name    job_title
+1   1       John Mendes Professional
+2   2       Rob Stewart   Programmer
+3   3 Rachel Abrahamson   Management
+4   4   Christy Hickman     Clerical
+5   5    Johnson Harper    Developer
+6   6    Candace Miller   Programmer
+7   7     Carlson Landy   Management
+8   8      Pansy Jordan     Clerical
+9   9      Darius Berry    Developer
+10 10    Claudia Garcia   Programmer
+
+Right now, the first and last names are combined into one column. 
+We can use the separate function to split these into separate columns. 
+We'll start with separate, and then the data frame we want to work with and the column we'd like to separate. Then we'll add what we'd like to split the name column into.
+We'll just name these new columns, first name and last name.
+And finally, we'll tell R to separate the name column at the first blank space. When we run this, it will build us new columns for the first and last names.
+
+> separate(employee, name,into=c('first_name','last_name'), sep = ' ')
+   id first_name  last_name    job_title
+1   1       John     Mendes Professional
+2   2        Rob    Stewart   Programmer
+3   3     Rachel Abrahamson   Management
+4   4    Christy    Hickman     Clerical
+5   5    Johnson     Harper    Developer
+6   6    Candace     Miller   Programmer
+7   7    Carlson      Landy   Management
+8   8      Pansy     Jordan     Clerical
+9   9     Darius      Berry    Developer
+10 10    Claudia     Garcia   Programmer
+
+The separate function has a partner, unite. 
+The unite function allows us to merge columns together. Basically, it does the opposite of separate. 
+Let's say we're working with the version of this data frame with two name columns, and we want to combine them. We'll copy in this data as well.
+
+first_name <- c("John", "Rob", "Rachel", "Christy", "Johnson", "Candace", "Carlson", "Pansy", "Darius", "Claudia")
+last_name <- c("Mendes", "Stewart", "Abrahamson", "Hickman", "Harper", "Miller", "Landy", "Jordan", "Berry", "Garcia")
+job_title <- c("Professional", "Programmer", "Management", "Clerical", "Developer", "Programmer", "Management", "Clerical", "Developer", "Programmer")
+employee <- data.frame(id, first_name, last_name, job_title)
+print(employee)
+   id first_name  last_name    job_title
+1   1       John     Mendes Professional
+2   2        Rob    Stewart   Programmer
+3   3     Rachel Abrahamson   Management
+4   4    Christy    Hickman     Clerical
+5   5    Johnson     Harper    Developer
+6   6    Candace     Miller   Programmer
+7   7    Carlson      Landy   Management
+8   8      Pansy     Jordan     Clerical
+9   9     Darius      Berry    Developer
+10 10    Claudia     Garcia   Programmer
+
+Our unite statement's a lot like our separate. We'll start with unite and indicate the data frame we're referring to. Then, we'll name the column we're combining first name and last name in. 
+And then we'll say which columns we're combining. No quotation marks needed here. And finally, we can include a space that separates them. And when we run that, those two columns are combined.
+
+> unite(employee, 'name', first_name,last_name, sep = ' ')
+   id              name    job_title
+1   1       John Mendes Professional
+2   2       Rob Stewart   Programmer
+3   3 Rachel Abrahamson   Management
+4   4   Christy Hickman     Clerical
+5   5    Johnson Harper    Developer
+6   6    Candace Miller   Programmer
+7   7     Carlson Landy   Management
+8   8      Pansy Jordan     Clerical
+9   9      Darius Berry    Developer
+10 10    Claudia Garcia   Programmer
+
+In addition to separating and merging columns, we can also create new variables in our data frame using the mutate function. 
+Mutate was used to clean and organize our data. But mutate can also be used to add columns with calculations.
+Let's go back to our penguin dataset.
+Right now, the body mass column is measured in grams. Maybe we want to add a column with kilograms. To do that, we'll use mutate to perform the conversion and add a new column.
+And it will return a tibble with our new column.
+
+> penguins %>% 
++   mutate(body_mass_kg=body_mass_g/1000)
+# A tibble: 344 × 9
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year body_mass_kg
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>        <dbl>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007         3.75
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007         3.8 
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007         3.25
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007        NA   
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007         3.45
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007         3.65
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007         3.62
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007         4.68
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007         3.48
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007         4.25
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
+
+You can make calculations on multiple new variables by adding a comma. 
+Let's add a column converting the flipper length too. 
+
+> penguins %>% 
++   mutate(body_mass_kg=body_mass_g/1000, flipper_length_m=flipper_length_mm/100)
+# A tibble: 344 × 10
+   species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g sex     year body_mass_kg flipper_length_m
+   <fct>   <fct>              <dbl>         <dbl>             <int>       <int> <fct>  <int>        <dbl>            <dbl>
+ 1 Adelie  Torgersen           39.1          18.7               181        3750 male    2007         3.75             1.81
+ 2 Adelie  Torgersen           39.5          17.4               186        3800 female  2007         3.8              1.86
+ 3 Adelie  Torgersen           40.3          18                 195        3250 female  2007         3.25             1.95
+ 4 Adelie  Torgersen           NA            NA                  NA          NA NA      2007        NA               NA   
+ 5 Adelie  Torgersen           36.7          19.3               193        3450 female  2007         3.45             1.93
+ 6 Adelie  Torgersen           39.3          20.6               190        3650 male    2007         3.65             1.9 
+ 7 Adelie  Torgersen           38.9          17.8               181        3625 female  2007         3.62             1.81
+ 8 Adelie  Torgersen           39.2          19.6               195        4675 male    2007         4.68             1.95
+ 9 Adelie  Torgersen           34.1          18.1               193        3475 NA      2007         3.48             1.93
+10 Adelie  Torgersen           42            20.2               190        4250 NA      2007         4.25             1.9 
+# ℹ 334 more rows
+# ℹ Use `print(n = ...)` to see more rows
