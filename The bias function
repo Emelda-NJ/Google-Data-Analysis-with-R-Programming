@@ -1,0 +1,33 @@
+In R, we can actually quantify bias by comparing the actual outcome of our data with the predicted outcome.
+Basically the bias function finds the average amount that the actual outcome is greater than the predicted outcome. It's included in the sim design package. 
+If the model is unbiased, the outcome should be pretty close to zero. A high result means that your data might be biased. A good thing to know before you analyze it. 
+Let's say we're working with a local weather channel to determine if their weather predictions are biased. 
+First we need to install and load a package called Sim design.
+install.packages('SimDesign')
+library(SimDesign)
+
+We'll use the bias function to compare forecasted temperatures with actual temperatures. For this example we'll just take a small sample of our weather data and input them here. We'll label this the actual temp.
+Then, we'll put in the predictions. And then the bias function.
+
+actual_temp <- c(68.3, 70, 72.4, 71, 67, 70)
+predicted_temp <- c(67.9, 69, 71.5, 70, 67, 69)
+bias(actual_temp, predicted_temp)
+[1] 0.7166667
+
+When we run this we find out that the result Is 0.71. That's pretty close to zero but the prediction seemed biased towards lower temperatures which, means they aren't as accurate as they could be. 
+And now that the local weather channel knows about this, they can find the problem in their system that's causing biased predictions. 
+This doesn't mean that their predictions will be perfect all the time, but they'll be more accurate overall.
+
+Let's try another example, in this scenario we're working for a game store. The store has been keeping a record of how many copies of new games they sell on release day. 
+They want to compare those numbers to their actual sales so that they could find out if they are ordering new stock according to their actual needs. 
+Just like the previous example, we will start by inputting our sales data, will label that actual underscore sales and add the data points.
+Next will input the amount of stock they ordered as predicted underscore sales and then input those data points.
+As in the first example, the bias function compares the actual outcome and the predicted outcome of the data to determine the average amount the actual outcome is greater than the predicted outcome. 
+An unbiased model should be close to zero. 
+actual_sales <- c(150, 203, 137, 247, 116, 287)
+predicted_sales <- c(200, 300, 150, 250, 150, 300)
+bias(actual_sales, predicted_sales)
+[1] -35
+
+When we press enter... The result is negative 35. That's pretty far from zero. The predicted outcome is larger than the actual outcome which means they may be ordering too much stock for release days. 
+Now that they've used the bias function to compare these data points, they can reevaluate their stocking practices to avoid buying more stock than they need at once.
