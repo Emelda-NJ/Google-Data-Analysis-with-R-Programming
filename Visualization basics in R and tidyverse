@@ -1,0 +1,172 @@
+Some of the most popular visualization packages you can use with R include ggplot2, Plotly, Lattice, RGL, Dygraphs, Leaflet, Highcharter, Patchwork, gganimate and ggridges.
+
+General-purpose packages like Plotly let you do a wide range of visualization functions. Others like RGL, focus on specific solutions like 3D visuals. 
+ggplot2 is both powerful and flexible. With a little bit of code, you can create all kinds of different plots. You can use ggplot2 on its own or extend its powers with other packages.
+The first two letters of ggplot2 actually stand for grammar of graphics.
+Ggplot2 has lots of other benefits too. You can create all different types of plots including scatter plots, bar charts, line diagrams and tons more. 
+You can change the colors, layout and dimensions of your plots and add text elements like titles, captions and labels.
+
+## We'll focus on some core concepts in ggplot2: aesthetics, geoms, facets, labels and annotations. 
+In ggplot2 an aesthetic is a visual property of an object in your plot. For example, in a scatter plot aesthetics include things like the size, shape or color of your data points. 
+Think of an aesthetic as a connection or mapping between a visual feature in your plot and a variable in your data.
+
+A geom refers to the geometric object used to represent your data. For example, you can use points to create a scatter plot, bars to create a bar chart, or lines to create a line diagram. 
+You can choose a geom to fit the type of data you have. Points show the relationship between two quantitative variables. Bars show one quantitative variable varies across different categories. 
+
+Facets let you display smaller groups or subsets of your data. With facets, you can create separate plots for all the variables in your dataset.
+
+Finally, the label and annotate functions let you customize your plot. You can add text like titles, subtitles and captions to communicate the purpose of your plot or highlight important data. 
+
+## The basics of ggplot2 Activity
+The ggplot2 package lets you use R code to specify the dataset, geom, and aesthetics of your plot.
+To do this, first choose a dataset to work with. For this activity, you will use the Palmer Penguins data that you’re already familiar with from earlier videos. However, you can also use another dataset instead. 
+Once you decide on your dataset, open RStudio and follow these steps:
+
+1. If you have not done so before, use the install.packages() function to install both ggplot2 and the Palmer Penguins data set. 
+Type install.packages(“ggplot2”) and install.packages(“palmerpenguins”), then click Run.
+2. Load ggplot2 and the dataset using the library() function. Type library(ggplot2) and library(palmerpenguins).
+3.  Now, examine the data frame for the penguins data. To do this, use the data() and View() functions. 
+Use a capital “V” for the View() function since functions in R are case sensitive. Type data(penguins) and View(penguins), then click Run.
+
+The penguins dataset contains size measurements for three penguin species (Adelie, Chinstrap, and Gentoo) that live on the Palmer Archipelago in Antarctica. 
+The columns include information such as body mass, flipper length, and bill length. 
+
+Suppose you want to plot the relationship between body mass and flipper length in the three penguin species. You can choose a specific geom that fits the type of data you have. 
+Points show the relationship between two quantitative variables. A scatterplot of points would be an effective way to display the relationship between the two variables. 
+You can put flipper length on the x-axis and body mass on the y-axis. 
+
+Type the following code to create the plot: 
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+ggplot(data = penguins): In ggplot2, you begin a plot with the ggplot() function. 
+The ggplot() function creates a coordinate system that you can add layers to. The first argument of the ggplot() function is the dataset to use in the plot. In this case, it’s “penguins.”
+
++: Then, you add a “+” symbol to add a new layer to your plot. You complete your plot by adding one or more layers to ggplot().
+
+geom_point(): Next, you choose a geom by adding a geom function. The geom_point() function uses points to create scatterplots, the geom_bar function uses bars to create bar charts, and so on. 
+In this case, choose the geom_point function to create a scatter plot of points. The ggplot2 package comes with many different geom functions.
+
+(mapping = aes(x = flipper_length_mm, y = body_mass_g)): Each geom function in ggplot2 takes a mapping argument. This defines how variables in your dataset are mapped to visual properties. 
+The mapping argument is always paired with the aes() function. The x and y arguments of the aes() function specify which variables to map to the x-axis and the y-axis of the coordinate system. 
+In this case, you want to map the variable “flipper_length_mm” to the x-axis, and the variable “body_mass_g” to the y-axis. 
+
+Now go ahead and run the code.
+The plot shows a positive relationship between the two variables. In other words, the larger the penguin, the longer the flipper. 
+
+Pro-Tip: You can write the same section of code above using a different syntax with the mapping argument inside the ggplot() call: 
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = body_mass_g)) +  geom_point()
+
+To create your own plot using code, follow these three steps:
+1. Start with the ggplot() function and choose a dataset to work with.
+2. Add a geom_ function to display your data.
+3. Map the variables you want to plot in the arguments of the aes() function.
+
+## ggplot2 Activity
+In this scenario, you are a junior data analyst working for a hotel booking company. You have cleaned and manipulated your data, and gotten some initial insights you would like to share. 
+Now, you are going to create some simple data visualizations with the `ggplot2` package. You will use basic `ggplot2` syntax and troubleshoot some common errors you might encounter.    
+
+## Step 1: Import your data 
+The data in this example is originally from the article Hotel Booking Demand Datasets (https://www.sciencedirect.com/science/article/pii/S2352340918315191), written by Nuno Antonio, Ana Almeida, and Luis Nunes for Data in Brief, Volume 22, February 2019.
+The data was downloaded and cleaned by Thomas Mock and Antoine Bichat for #TidyTuesday during the week of February 11th, 2020 (https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-02-11/readme.md).
+You can learn more about the dataset here:
+https://www.kaggle.com/jessemostipak/hotel-booking-demand
+
+In the chunk below, you will use the `read_csv()` function to import data from a .csv in the project folder called "hotel_bookings.csv" and save it as a data frame called `hotel_bookings`:
+```{r load data}
+hotel_bookings <- read.csv("hotel_bookings.csv")
+```
+## Step 2: Look at a sample of your data
+Use the head() function to preview your data: 
+```{r examining your data}
+head(hotel_bookings)
+```
+
+You can also use colnames() to get the names of all the columns in your data set. Run the code chunk below to find out the column names in this data set:
+```{r look at column names}
+colnames(hotel_bookings)
+```
+
+## Step 3: Install and load the 'ggplot2' package
+If you haven't already installed and loaded the `ggplot2` package, you will need to do that before you can use the `ggplot()` function. 
+Run the code chunk below to install and load `ggplot2`. This may take a few minutes.
+
+```{r loading and installing ggplot2, echo=FALSE, message=FALSE}
+install.packages('ggplot2')
+library(ggplot2)
+```
+
+## Step 4: Begin creating a plot
+You can use `ggplot2` to determine if people with children book hotel rooms in advance. Try running the code below:
+```{r creating a plot}
+ggplot(data = hotel_bookings) +
+  geom_point(mapping = aes(x = lead_time, y = children))
+```
+On the x-axis, the plot shows how far in advance a booking is made, with the bookings furthest to the right happening the most in advance. On the y-axis it shows how many children there are in a party.
+
+## Step 5: Try it on your own
+Try mapping 'stays_in_weekend_nights' on the x-axis and 'children' on the y-axis by filling out the remainder of the code below:
+```{r}
+ggplot(data = hotel_bookings) +
+ geom_point(mapping = aes(x = stays_in_weekend_nights, y = children))
+```
+
+## Aesthetic attributes
+The three basic aesthetic attributes to consider when creating ggplot2 visualizations in R: color, size, and shape. 
+These attributes are essential tools for creating data visualizations with ggplot2 and are built directly into its code.
+
+Aesthetics in ggplot2
+ggplot2 is an R package that allows you to create different types of data visualizations right in your R workspace. In ggplot2, an aesthetic is defined as a visual property of an object in your plot. 
+
+There are three aesthetic attributes in ggplot2:
+1. Color: this allows you to change the color of all of the points on your plot, or the color of each data group
+2. Size: this allows you to change the size of the points on your plot by data group
+3. Shape: this allows you to change the shape of the points on your plot by data group
+
+Here’s an example of how aesthetic attributes are displayed in R:
+ggplot(data, aes(x=distance, y= dep_delay, color=carrier, size=air_time, shape = carrier)) 
+      geom_point()
+
+Let's go back to our penguins dataset and review the code for our plot that shows the relationship between body mass and flipper length.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+As a quick refresher the mapping equals aes part of the code tells R what aesthetics to use for the plot. You use the aes function to define the mapping between your data and your plot. 
+Mapping means matching up a specific variable in your dataset with a specific aesthetic.
+For example, you can map a variable to the x-axis of your plot or you can map a variable to the y-axis of your plot. 
+To map an aesthetic to a variable, set the name of the aesthetic equal to the name of the variable inside the parentheses of the aes function. 
+Our code tells R to map flipper length to the x-axis and body mass to the y-axis. 
+
+we can map a new variable to a new aesthetic. Let's add a third variable to our scatter plot by mapping it to a new aesthetic. 
+We'll map the variable species to the aesthetic color by adding some code inside the parentheses of the aes function. We'll add a comma after the body mass variable and type color equals sign species. 
+Our code tells R to assign a different color to each species of penguin.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, color=species))
+
+The Gentoo are the largest of the three penguin species. The legend just to the right of the plot shows us that the blue points refer to the Gentoo penguins. 
+Not only does R automatically apply different colors to each data point, it also gives a legend to show us the color-coding.
+
+We can also use shape to highlight the different penguin species. Let's map the variable species to the aesthetic shape. To do this, we can change the code from color equal species to shape equal species. 
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape=species))
+
+Instead of colored points, R assigns different shapes to each species. Now the legend shows us a circle for the Adelie species, a triangle for the Chinstraps and a square for the Gentoos. 
+You might notice that our plot's in black and white again because we removed the code for color.
+
+If we want we can map more than one aesthetic to the same variable. Let's map both color and shape to species. We'll add the code color equals species while keeping the code shape equal species.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape=species, color=species))
+
+Now our plot shows a different color and a different shape for each species.
+
+Let's add size as well and map three aesthetics to species. If we add size equal species, each colored shape will also be a different size.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, shape=species, color=species, size=species))
+
+We can also map species to the alpha aesthetic, which controls the transparency of the points. Our first plot showed the relationship between body mass and flipper length in black and white. 
+Then we mapped the variable species to the aesthetic color to show the difference between each of the three penguin species. 
+If we want to keep our graph in black and white, we can map the alpha aesthetic to species. This will make some points more transparent or see-through than others. 
+This gives us another way to represent each penguin species. Alpha is a good option when you've got a dense plot with lots of data points.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g, alpha=species))
+
+You can also set the aesthetic apart from a specific variable. Let's say we want to change the color of all the points to purple. Here we don't want to map color to a specific variable like species. 
+We just want every point in our scatter plot to be purple. So we need to set our new piece of code outside of the aes function and use quotation marks for our color value. 
+This is because all the code inside of the aes function tells R how to map aesthetics to variables. For example, mapping the aesthetic color to the variable species.
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g), color="purple")
+
+If we want to change the appearance of our overall plot without regard to specific variables, we write code outside of the aes function.
+These are the most common aesthetics for points: x, y, color, shape, size and alpha.
