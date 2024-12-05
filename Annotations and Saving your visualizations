@@ -1,0 +1,232 @@
+How to annotate a plot in ggplot2
+
+How to customize the look and feel of our plots using the label and annotate functions. 
+To annotate means to add notes to a document or diagram to explain or comment upon it. In ggplot 2 adding annotations to your plot can help explain the plot's purpose or highlight important data. 
+When you present your data visuals to stakeholders, you may not have much time to meet with them. Labels and annotations will point their attention to key things and help them quickly understand your plot. 
+
+Label function. 
+It's super useful for adding informative labels to a plot such as titles, subtitles, and captions. 
+For example, we can add a title to our plot that shows the relationship between body mass and flipper length for the three penguin species. A title will clearly indicate the purpose of the plot. 
+
+Let's go over the code. 
+First, we add a plus sign to add a new layer to our plot. Next in the parentheses, following the label function, we write the word title, then an equal sign than the specific text we want in our title. 
+Let's log into RStudio Cloud and check it out. First, let's load the ggplot2 package in the penguins dataset.
+
+library(ggplot2)
+library(palmerpenguins)
+
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length")
+
+R automatically displays the title at the top of the plot.
+
+We can also add a subtitle to our plot to highlight important information about our data. To do this, we enter the code for a subtitle in the same way as a title. 
+Remember to add a comma after the title argument before you enter your subtitle.
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species")
+
+R automatically displays the subtitle just below the title. 
+
+We can add a caption to our plot in the same way. 
+Captions let us show the source of our data. The palmer penguins data was collected from 2007 to 2009 by Dr.Kristen Gorman, a member of the Palmer Station Long Term Ecological Research program. 
+Let's cite Dr. Gorman in our caption.
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+	      caption="Data collected by Dr. Kristen Gorman")
+
+R automatically displays the caption at the bottom right of our plot.
+
+Titles, subtitles, and captions are labels that we put outside of the grid of our plot to indicate important information. 
+If we want to put text inside the grid to call out specific data points, we can use the annotate function. For example, let's say we want to highlight the data from the Gentoo penguins. 
+We can use the annotate function to add some text next to the data points that refer to the Gentoos. This text will clearly communicate what the plot shows and reinforce an important part of our data.
+Okay, let's check out the code. In the parentheses of the annotate function, we've got information on the type of label, the specific location of the label and the context of the label. 
+In this case, we want to write a text label. We also want to place it near the Gentoo data points. Let's put it at the following coordinates: x-axis equals 220 millimeters and y-axis equals 3,500 grams. 
+Finally, let's write our text. The Gentoos are the largest.
+
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+	    caption="Data collected by Dr. Kristen Gorman")+
+  annotate("text", x=220,y=3500,label="The Gentoos are the largest")
+
+R automatically places the text label on the correct coordinates in our plot. We can customize our annotation even more. 
+Let's say we want to change the color of our text. Well, we can add color equals followed by the name of the color. Let's try purple. 
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+	    caption="Data collected by Dr. Kristen Gorman")+
+  annotate("text", x=220,y=3500,label="The Gentoos are the largest",color="purple")
+
+We can also change the font style and size of our text. Use font face and size to write the code. Let's bold our text and make it a little larger.
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+	    caption="Data collected by Dr. Kristen Gorman")+
+  annotate("text", x=220,y=3500,label="The Gentoos are the largest",color="purple",
+          fontface="bold",size=4.5)
+
+We can even change the angle of our text. For example, we can tilt our text at a 25 degree angle to line it up with our data points.
+ggplot(data=penguins)+
+	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+	    caption="Data collected by Dr. Kristen Gorman")+
+  annotate("text", x=220,y=3500,label="The Gentoos are the largest",color="purple",
+          fontface="bold",size=4.5,angle=25)
+
+By this point, our code is getting pretty long. If you want to use less code, you can store your plot as a variable in R. 
+As a quick reminder to create a variable in R you type the variable name then a less than sign, followed by a dash. Let's try it with the variable name p.
+p <- ggplot(data=penguins)+
+      	geom_point(mapping=aes(x=flipper_length_mm,y=body_mass_g,color=species))+
+      	labs(title="Palmer Penguins: Body Mass vs. Flipper Length", subtitle="Sample of Three Penguin Species",
+      	      caption="Data collected by Dr. Kristen Gorman")
+
+Now, instead of writing all the code again, we can just call p and add an annotation to it like this.
+p+annotate("text", x=220,y=3500,label="The Gentoos are the largest")
+
+You get the same result. 
+
+** Saving your visualizations **
+let's save our plots. 
+To do this, you'll use the Export option in the plots tab of RStudio or the ggsave function provided by the ggplot2 package.
+
+Using the Export option in the plots tab to save our plot.
+We can save it as an image file or a PDF file.
+There are six different options for image format, including PNG and JPEG. Let's try PNG. Next, we name our file and click Save.
+
+ggsave is a useful function for saving a plot. It defaults to saving the last plot that you displayed and uses the size of the current graphics device. 
+Let's try saving our plot as a PNG file using ggsave. ggsave will automatically save the plot that shows the relationship between body mass and flipper length because this is the last plot that we displayed. 
+We have to give the file a name and say what kind of file we want to save it as. Let's write the code.
+ggsave("Three Penguin Species.png")
+
+Within the parentheses of the function we start off with a quotation mark, followed by the name of the file. Let's name it Three Penguin Species. 
+We put a period after the file name, then the type of file we want, then a closing quotation mark.
+
+** Annotating and saving solutions **
+## The Scenario
+As a junior data analyst for a hotel booking company, you have been creating visualizations in `R` with the `ggplot2`  package to share insights about your data with stakeholders. 
+After creating a series of visualizations using `ggplot()`, `ggplot2` aesthetics, and filters, your stakeholder asks you to add annotations to your visualizations to help explain your findings in a presentation. 
+Luckily, `ggplot2` has annotation functions built in.  
+
+## Step 1: Import your data
+Run the code below to read in the file 'hotel_bookings.csv' into a data frame: 
+
+```{r}
+hotel_bookings <- read.csv("hotel_bookings.csv")
+```
+
+## Step 2: Refresh Your Memory
+Refresh your memory with the `head()` and `colnames()` functions. Run two code chunks below to get at a sample of the data and also preview all the column names:
+
+```{r look at data}
+head(hotel_bookings)
+```
+
+```{r look at column names}
+colnames(hotel_bookings)
+```
+
+## Step 3: Install and load the 'ggplot2' package (optional)
+If you haven't already installed and loaded the `ggplot2` package, you will need to do that before you can use the `ggplot()` function.
+Run the code chunk below to install and load `ggplot2`.
+
+```{r loading and installing ggplot2, echo=FALSE, message=FALSE}
+install.packages('ggplot2')
+library(ggplot2)
+```
+
+## Step 4: Annotating your chart
+As a refresher, here is the chart you created before:
+```{r faceting a plot}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel)
+```
+
+The first step will be adding a title; that is often the first thing people will pay attention to when they encounter a data visualization for the first time. 
+To add a title, you will add `labs()` at the end of your `ggplot()` command and then input a title there:
+
+```{r faceting a plot with a title}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title="Comparison of market segments by hotel type for hotel bookings")
+```
+
+You also want to add another detail about what time period this data covers. To do this, you need to find out when the data is from. 
+You realize you can use the `min()` function on the year column in the data:
+
+```{r earliest year}
+min(hotel_bookings$arrival_date_year)
+```
+ 
+And the `max()` function:
+```{r latest year}
+max(hotel_bookings$arrival_date_year)
+```
+
+But you will need to save them as variables in order to easily use them in your labeling; the following code chunk creates two of those variables: 
+```{r latest date}
+mindate <- min(hotel_bookings$arrival_date_year)
+maxdate <- max(hotel_bookings$arrival_date_year)
+```
+
+Now, you will add in a subtitle using `subtitle=` in the `labs()` function. Then, you can use the `paste0()` function to use your newly-created variables in your labels. 
+This is really handy, because if the data gets updated and there is more recent data added, you don't have to change the code below because the variables are dynamic:
+
+```{r city bar chart with timeframe}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title="Comparison of market segments by hotel type for hotel bookings",
+       subtitle=paste0("Data from: ", mindate, " to ", maxdate))
+```
+
+You decide to switch the `subtitle`  to a `caption` which will appear in the bottom right corner instead.
+```{r city bar chart with timeframe as caption}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title="Comparison of market segments by hotel type for hotel bookings",
+       caption=paste0("Data from: ", mindate, " to ", maxdate))
+```
+
+Now you want to clean up the x and y axis labels to make sure they are really clear. To do that, you can add to the `labs()` function and use `x=` and `y=`. 
+Feel free to change the text of the label and play around with it:
+```{r city bar chart with x and y axis}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title="Comparison of market segments by hotel type for hotel bookings",
+       caption=paste0("Data from: ", mindate, " to ", maxdate),
+       x="Market Segment",
+       y="Number of Bookings")
+```
+
+## Step 5: Saving your chart
+The `ggsave()` function was used to save the last plot that was generated, so if you have run something after running the code chunk above, then run that code chunk again. 
+Then run the following code chunk to save that plot as a .png file named `city_payment_chart`, which makes it clear to your stakeholders what the .png file contains. 
+Now you should be able to find this file in your 'Files' tab in the bottom right of your screen. Check it out!
+
+```{r save your plot}
+ggsave('hotel_booking_chart.png')
+```
+
+## Practice quiz
+What are the default dimensions that `ggsave()` saved your image as?
+A: 5x5
+B: 10x10
+C: 7x7
+D: 25x25
+Answer: C. The default dimensions  of this ggsave() image are 7x7. You can see these dimensions listed after you run the code chunk. 
+
+If you wanted to make your chart bigger and more rectangular to fit the slide show presentation, you could specify the height and width of your .png in the `ggsave()` command. 
+Edit the code chunk below to create a 16x8 .png image: 
+
+```{r save your plot}
+ggsave('hotel_booking_chart.png',
+       width=16,
+       height=8)
+```
