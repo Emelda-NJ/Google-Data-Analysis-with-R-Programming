@@ -1,0 +1,128 @@
+Filtering and plots
+
+How to use the filter function from dplyr to make the plots you create with ggplot2 easier to read. 
+Filtering your data before you plot it allows you to focus on specific subsets of your data and gain more targeted insights. To do this, just include the dplyr filter() function in your ggplot syntax. 
+
+Example code
+data %>%
+    filter(variable1 == "DS") %>%  
+    ggplot(aes(x = weight, y = variable2, colour = variable1)) +  
+    geom_point(alpha = 0.3,  position = position_jitter()) + stat_smooth(method = "lm")
+
+** Filters and facets solutions **
+## The Scenario
+As a junior data analyst for a hotel booking company, you have been asked to clean hotel booking data, create visualizations with `ggplot2` to gain insight into the data, and present different facets of the data through visualization. 
+Now, you are going to build on the work you performed previously to apply filters to your data visualizations in `ggplot2`.
+
+## Step 1: Import your data
+Run the code below to read in the file 'hotel_bookings.csv' into a data frame: 
+
+```{r}
+hotel_bookings <- read.csv("hotel_bookings.csv")
+```
+
+## Step 2: Refresh Your Memory
+Refresh your memory with the `head()` and `colnames()` functions. Run two code chunks below to get at a sample of the data and also preview all the column names:
+
+```{r look at data}
+head(hotel_bookings)
+```
+
+```{r look at column names}
+colnames(hotel_bookings)
+```
+
+## Step 3: Install and load the 'ggplot2' package (optional)
+If you haven't already installed and loaded the `ggplot2` package, you will need to do that before you can use the `ggplot()` function.
+Run the code chunk below to install and load `ggplot2`.
+
+```{r loading and installing ggplot2, echo=FALSE, message=FALSE}
+install.packages('ggplot2')
+library(ggplot2)
+```
+
+## Step 4: Making many different charts
+As a refresher, here's an example of a scatter plot.
+
+```{r creating a plot}
+ggplot(data = hotel_bookings) +
+  geom_point(mapping = aes(x = lead_time, y = children))
+```
+
+You decide to create a bar chart showing each hotel type and market segment. You use different colors to represent each market segment:
+
+```{r bar chart}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = hotel, fill = market_segment))
+```
+
+You decide to use the facet_wrap() function to create a separate plot for each market segment: 
+
+```{r faceting a plot}
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = hotel)) +
+  facet_wrap(~market_segment)
+```
+
+## Step 5: Filtering
+For the next step, you will need to have the `tidyverse` package installed and loaded. You may see a pop-up asking if you want to install; if that's the case, click 'Install.'
+If you already have done this because you're using the`tidyverse` package on your own, you can skip this code chunk.
+
+```{r install and download tidyverse}
+install.packages('tidyverse')
+library(tidyverse)
+```
+
+Use the `filter()` function to create a data set that only includes the data you want: 
+
+```{r filtering a dataset to just city hotels that are online TA}
+onlineta_city_hotels <- filter(hotel_bookings, 
+                           (hotel=="City Hotel" & 
+                             hotel_bookings$market_segment=="Online TA"))
+```
+
+You can use the`View`() function to check out your new data frame:
+
+```{r View}
+View(onlineta_city_hotels)
+```
+
+You can use the pipe operator (%>%) to do this in steps! 
+
+You name this data frame `onlineta_city_hotels_v2`:
+
+```{r filtering a dataset with the pipe}
+onlineta_city_hotels_v2 <- hotel_bookings %>%
+                          filter(hotel=="City Hotel") %>%
+                          filter(market_segment=="Online TA")
+```
+
+This code chunk generates the same data frame by using the `View()` function:
+
+```{r view second dataframe}
+View(onlineta_city_hotels_v2)
+```
+
+## Step 6: Use your new dataframe
+Using the code for your previous scatterplot, replace `variable_name` in the code chunk below with either `onlineta_city_hotels` or `onlineta_city_hotels_v2` to plot the data your stakeholder requested:
+
+```{r creating a plot part two}
+ggplot(data = onlineta_city_hotels) +
+  geom_point(mapping = aes(x = lead_time, y = children))
+```
+
+** Know your ggplot functions **
+Chart title
+To add a title to the chart, use a label function: title = Average product rating.
+
+Bar chart
+To create the bars on the chart, use a geom function: geom_bar ().
+
+Blue and yellow bars
+To highlight underperforming products, use an aesthetics function: col = ifelse (x<2, 'blue', 'yellow').
+
+Scatter plot chart
+To create the scatter plot, use a geom function: geom_point ().
+
+Trend line
+To create a trend line, use a geom function: geom_smooth ().
